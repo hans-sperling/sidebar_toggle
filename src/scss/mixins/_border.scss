@@ -1,0 +1,94 @@
+// -------------------------------------------------------------------------------------------------------------- Config
+
+$borderColor  : rgb(30, 30, 30) !default;
+$borderRadius : 5px !default;
+$borderStyle  : solid !default;
+$borderWidth  : 1px !default;
+
+// -------------------------------------------------------------------------------------------------------------- Mixins
+
+@mixin border-top($width : $borderWidth, $style : $borderStyle, $color : $borderColor) {
+    border-top: $width $style $color;
+}
+
+
+@mixin border-right($width : $borderWidth, $style : $borderStyle, $color : $borderColor) {
+    border-right: $width $style $color;
+}
+
+
+@mixin border-bottom($width : $borderWidth, $style : $borderStyle, $color : $borderColor) {
+    border-bottom: $width $style $color;
+}
+
+
+@mixin border-left($width : $borderWidth, $style : $borderStyle, $color : $borderColor) {
+    border-left: $width $style $color;
+}
+
+
+@mixin border($width : $borderWidth, $style : $borderStyle, $color : $borderColor) {
+    @include border-top($width, $style, $color);
+    @include border-right($width, $style, $color);
+    @include border-bottom($width, $style, $color);
+    @include border-left($width, $style, $color);
+}
+
+
+@mixin border-radius($radius : $borderRadius) {
+    -webkit-border-radius : $radius;
+    -moz-border-radius    : $radius;
+    border-radius         : $radius;
+}
+
+
+@mixin border-top-left-radius($radius : $borderRadius) {
+    -webkit-border-top-left-radius : $radius;
+    -moz-border-radius-topleft     : $radius;
+    border-top-left-radius         : $radius;
+}
+
+
+@mixin border-top-right-radius($radius : $borderRadius) {
+    -webkit-border-top-right-radius : $radius;
+    -moz-border-radius-topright     : $radius;
+    border-top-right-radius         : $radius;
+}
+
+
+@mixin border-bottom-left-radius($radius : $borderRadius) {
+    -webkit-border-bottom-left-radius : $radius;
+    -moz-border-radius-bottomleft     : $radius;
+    border-bottom-left-radius         : $radius;
+}
+
+
+@mixin border-bottom-right-radius($radius : $borderRadius) {
+    -webkit-border-bottom-right-radius : $radius;
+    -moz-border-radius-bottomright     : $radius;
+    border-bottom-right-radius         : $radius;
+}
+
+
+@mixin border-top-radius($radius : $borderRadius) {
+    @include border-top-right-radius($radius);
+    @include border-top-left-radius($radius);
+}
+
+
+@mixin border-right-radius($radius : $borderRadius) {
+    @include border-top-right-radius($radius);
+    @include border-bottom-right-radius($radius);
+}
+
+
+@mixin border-bottom-radius($radius : $borderRadius) {
+    @include border-bottom-right-radius($radius);
+    @include border-bottom-left-radius($radius);
+}
+
+
+@mixin border-left-radius($radius : $borderRadius) {
+    @include border-top-left-radius($radius);
+    @include border-bottom-left-radius($radius);
+}

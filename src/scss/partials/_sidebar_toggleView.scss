@@ -1,0 +1,132 @@
+
+@import "../mixins/border";
+@import "icons";
+
+& {
+    $rowColor         : rgb(255, 255, 255) !default;
+    $rowColorScoped   : rgb(255, 255, 255) !default;;
+    $rowColorInactive : rgb(255, 255, 255) !default;;
+    $fontColor        : rgb(0, 0, 0) !default;;
+    $borderColor      : rgb(0, 0, 0) !default;;
+    $borderRadius     : 5px !default;;
+    $borderStyle      : solid !default;
+    $borderWidth      : 1px !default;;
+
+    ul {
+        width           : 100%;
+        list-style-type : none;
+
+        &[data-level="0"] {
+            .group .space { width : 0;     }
+            .tool .space  { width : 0;     }
+            .markup       { width : 169px; }
+        }
+        &[data-level="1"] {
+            .group .space { width : 11px;  }
+            .tool .space  { width : 17px;  }
+            .markup       { width : 159px; }
+        }
+        &[data-level="2"] {
+            .group .space { width : 21px;  }
+            .tool .space  { width : 27px;  }
+            .markup       { width : 149px; }
+        }
+        &[data-level="3"] {
+            .group .space { width : 31px;  }
+            .tool .space  { width : 37px;  }
+            .markup       { width : 139px; }
+        }
+        &[data-level="4"] {
+            .group .space { width : 41px;  }
+            .tool .space  { width : 47px;  }
+            .markup       { width : 129px; }
+        }
+        &[data-level="5"] {
+            .group .space { width : 51px;  }
+            .tool .space  { width : 57px;  }
+            .markup       { width : 119px; }
+        }
+        &[data-level="6"] {
+            .group .space { width : 61px;  }
+            .tool .space  { width : 67px;  }
+            .markup       { width : 109px; }
+        }
+
+        &.collapsed {
+            display: none;
+        }
+    }
+
+    li.item {
+        .row {
+            @include border-bottom();
+
+            display    : flex;
+            background : $rowColor;
+            height     : auto;
+            min-height : 30px;
+            width      : 100%;
+            overflow   : hidden;
+        }
+
+        &.scoped {
+            > .row,
+            .row .part.move {
+                background : $rowColorScoped;
+            }
+        }
+
+        &.group .row .part.toggle {
+            color : $rowColorInactive;
+        }
+    }
+
+    .part {
+        @include border-right();
+
+        height : auto;
+    }
+
+
+    .toggle {
+        cursor : pointer;
+        width  : 22px;
+
+        .icon-toggle {
+            margin : 7px 0 0 0;
+            color  : $fontColor;
+        }
+    }
+
+    .move {
+        width : 10px;
+    }
+
+    .space {
+        @include border-right(0);
+    }
+
+    .folding {
+        cursor : pointer;
+        width  : 16px;
+
+        .icon-folding {
+            color   : $fontColor;
+            margin  : 5px 0 0 -3px;
+        }
+    }
+
+    .markup {
+        @include border-right(0);
+
+        box-sizing : border-box;
+        font-size  : 14px;
+        padding    : 5px 10px;
+        color      : $fontColor;
+
+        p {
+            font-size  : 14px;
+            color      : $fontColor;
+        }
+    }
+}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>sidebar_right_toggle</title>
+        <meta name="description" content="">
+
+        <style>
+            body {
+                position   : absolute;
+                width      : 100%;
+                height     : 100%;
+                margin     : 0;
+                padding    : 0;
+            }
+
+            .appWrap {
+                width      : calc(100% - 100px);
+                height     : calc(100% - 100px);
+                min-width  : 300px;
+                min-height : 300px;
+                margin     : 50px;
+            }
+
+            body.dark {
+                background : rgb(0,0,0);
+            }
+            body.dark .appWrap {
+                background : rgb(32,32,32);
+            }
+
+            body.bright {
+                background : rgb(255, 255, 255);
+            }
+            body.bright .appWrap {
+                background : rgb(223, 223, 223);
+            }
+        </style>
+
+        <!-- Vendor -->
+        <link href="vendor/sidebar/css/sidebar-dark.css" type="text/css" rel="stylesheet">
+        <link href="vendor/sidebar/css/sidebar-bright.css" type="text/css" rel="stylesheet">
+        <script src="vendor/sidebar/js/sidebar.js"></script>
+
+        <!-- Application -->
+        <link href="dist/css/sidebar_toggleView_dark.css"   type="text/css" rel="stylesheet">
+        <link href="dist/css/sidebar_toggleView_bright.css" type="text/css" rel="stylesheet">
+        <script src="src/js/sidebar_toggleView.js"></script>
+
+    </head>
+    <body class="dark">
+        <div class="appWrap"></div>
+
+        <script>
+            var sidebarRight = new Sidebar({
+                id       : 'SidebarRight',
+                scope    : 'sidebarJS',
+                layout   : 'bright',
+                expanded : true,
+                position : 'right',
+                callback : function callback(sidebarData) {
+                    createToggleView(sidebarData);
+                }
+            });
+
+            /*
+            var sidebarLeft = new Sidebar({
+                id       : 'SidebarLeft',
+                scope    : 'sidebarJS',
+                layout   : 'bright',
+                expanded : true,
+                position : 'left',
+                callback : function callback(sidebarData) {
+                    //createToggleView(sidebarData);
+                }
+            });
+            */
+
+            function getTool(id) {
+
+                function getMarkup () {
+                    return '<p>Tool ' + id + '</p>';
+                }
+
+                function callback() {
+                    //console.log('Callback for Tool ' + id);
+                }
+
+                function enable() {
+                    console.log('Enable Tool ' + id);
+                }
+
+                function disable() {
+                    console.log('Disable Tool ' + id);
+                }
+
+                return {
+                    getMarkup : getMarkup,
+                    callback  : callback,
+                    enable    : enable,
+                    disable   : disable
+                };
+            }
+
+            function createToggleView(sidebarData) {
+                var toggleView = new SidebarRightToggleView({
+                    element  : sidebarData.content,
+                    callback : function callback(toggleViewData) {}
+                });
+
+                toggleView.appendTool( { id :  1, pid : 0, enabled : true,  tool : getTool(1) } );
+                toggleView.appendTool( { id :  2, pid : 0, enabled : true,  tool : getTool(2) } );
+                toggleView.appendTool( { id :  3, pid : 0, enabled : true,  tool : getTool(3) } );
+                toggleView.appendTool( { id :  4, pid : 0, enabled : true,  tool : getTool(4) } );
+            }
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,108 @@
+$sidebarWidth           : 200px !default;
+$sidebarHeight          : 200px !default;
+$headerHeight           : 30px !default;
+$headerWidth            : 100% !default;
+$headerFontColor        : rgb(0, 0, 0) !default;
+$contentHeight          : 170px !default;
+$contentWidth           : 100% !default;
+$contentFontColor       : rgb(0, 0, 0) !default;
+$contentBackgroundColor : rgba(255, 255, 255, 0.8) !default;
+$resizerWidth           : 30px !default;
+$resizerHeight          : 15px !default;
+$resizerFontColor       : rgb(0, 0, 0) !default;
+$clickableMultiplier    : 1 !default;
+$iconSize               : 5px !default;
+$iconColor              : rgb(0, 0, 0) !default;
+$borderColor            : rgb(0, 0, 0) !default;
+$borderRadius           : 5px !default;
+$borderStyle            : solid !default;
+$borderWidth            : 1px !default;
+
+$headerBackgroundGradientStartColor : rgb(50, 50, 50) !default;
+$headerBackgroundGradientEndColor   : rgb(40, 40, 40) !default;
+
+
+// ------------------------------------------------------------------------------------------------------------- Imports
+
+@import "../mixins/_icons";
+@import "../mixins/gradient";
+@import "../mixins/border";
+
+// -------------------------------------------------------------------------------------------------------------- Styles
+
+& {
+    * {
+        margin  : 0;
+        padding : 0;
+    }
+
+    width    : $sidebarWidth;
+    height   : $sidebarHeight;
+    position : fixed;
+    cursor   : default;
+    z-index  : 9999;
+
+    .resizer {
+        @include gradient($headerBackgroundGradientStartColor, $headerBackgroundGradientEndColor);
+
+        position   : absolute;
+        width      : $resizerWidth;
+        height     : $resizerHeight;
+        cursor     : pointer;
+        color      : $resizerFontColor;
+        user-select : none;
+
+        .clickable {
+            position : relative;
+            width    : $resizerWidth * $clickableMultiplier;
+            height   : $resizerHeight * $clickableMultiplier;
+            user-select : none;
+            //background : rgba(255, 0, 0, 0.4); // Debug display the clickable content of the resizer
+
+            .icon-resizer {
+                position : absolute;
+                display  : block;
+                user-select : none;
+            }
+        }
+    }
+
+    .header {
+        @include gradient($headerBackgroundGradientStartColor, $headerBackgroundGradientEndColor);
+
+        width      : 100%;
+        overflow   : hidden;
+        color      : $headerFontColor;
+    }
+
+    .content {
+        overflow   : hidden;
+        color      : $contentFontColor;
+        background : $contentBackgroundColor;
+    }
+
+    .header,
+    .resizer,
+    .content {
+        @include border();
+    }
+
+    .content {
+        @include border-top(0);
+    }
+
+    &.expanded {
+        width  : $sidebarWidth;
+        height : $sidebarHeight;
+    }
+
+    &.expanded .header {
+        width  : $headerWidth;
+        height : $headerHeight;
+    }
+
+    &.expanded .content {
+        height : $contentHeight;
+        width  : $contentWidth;
+    }
+}
