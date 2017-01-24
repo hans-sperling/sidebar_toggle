@@ -1,3 +1,4 @@
+/*! sidebar_toggleView -  - Version: 0.1.0 */
 function SidebarRightToggleView(configuration) {
 
     // ---------------------------------------------------------------------------------------- Preferences & Properties
@@ -137,41 +138,11 @@ function SidebarRightToggleView(configuration) {
 
 
     function bindEvents() {
-        toggleView.onclick = function (e) {
-            var target = e.target;
-            var parent = target.parentNode;
-            console.log('click', e.target);
-            var i = 0;
-
-
-            do {
-                i++;
-                parent = parent.parentNode;
-
-                console.log('parent', parent);
-
-            }
-            while (!parent.classList.contains('toggleView'));
-
-            console.log(i);
-
-
-
-            if (e.target.classList.contains('part') || e.target.parentNode.classList.contains('part')) {
-                console.log('hier');
-            }
-        };
-
-
-
-        /*
         toggleView.addEventListener("click", function onClickEvent() {
             // ...
         });
 
-
-
-        $sidebar.off('.sidebarEvents');
+        /*
         $sidebar.on('click.sidebarEvents', '.item', function(e) {
             var $this  = $(this),
                 $item  = $this,
