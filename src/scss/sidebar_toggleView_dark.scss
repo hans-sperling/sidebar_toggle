@@ -21,15 +21,26 @@ $cssScope : sidebarJS !default;
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    &.right .toggleView {
+    &[data-position="right"] .toggleView {
         .part {
             float : left;
         }
     }
 
-    &.left .toggleView {
-        .part {
-            float : right;
+
+    &[data-position="left"] .toggleView {
+        .row {
+            display: flex;
+            flex-direction: row-reverse;
+
+            .part {
+                @include border(0);
+                @include border-left();
+            }
+
+            .space {
+                @include border(0);
+            }
         }
     }
 }

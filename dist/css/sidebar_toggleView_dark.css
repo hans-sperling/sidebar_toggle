@@ -218,9 +218,23 @@
   font-size: 14px;
   color: #e6e6e6;
 }
-.sidebarJS[data-layout="dark"].right .toggleView .part {
+.sidebarJS[data-layout="dark"][data-position="right"] .toggleView .part {
   float: left;
 }
-.sidebarJS[data-layout="dark"].left .toggleView .part {
-  float: right;
+.sidebarJS[data-layout="dark"][data-position="left"] .toggleView .row {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.sidebarJS[data-layout="dark"][data-position="left"] .toggleView .row .part {
+  border-top: 0 solid black;
+  border-right: 0 solid black;
+  border-bottom: 0 solid black;
+  border-left: 0 solid black;
+  border-left: 1px solid black;
+}
+.sidebarJS[data-layout="dark"][data-position="left"] .toggleView .row .space {
+  border-top: 0 solid black;
+  border-right: 0 solid black;
+  border-bottom: 0 solid black;
+  border-left: 0 solid black;
 }

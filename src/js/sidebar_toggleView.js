@@ -138,13 +138,18 @@ function SidebarRightToggleView(configuration) {
 
     function bindEvents() {
         toggleView.onclick = function (e) {
-            var target = e.target,
-                limit  = 10,
+            var target  = e.target,
+                element = target,
+                limit   = 10,
+                id      = null,
+                enabled = null,
                 i;
 
-            do {
-                if (target.classList.contains('item')) {
-                    if (!target.classList.contains('scoped')) {
+            while ((element !== toggleView) || (limit <= 0)) {
+                if (element.classList.contains('item')) {
+                    id = element.getAttribute('data-id');
+
+                    if (!element.classList.contains('scoped')) {
                         var scoped = toggleView.getElementsByClassName('scoped');
 
                         // Remove all deprecated scoped items
@@ -152,35 +157,43 @@ function SidebarRightToggleView(configuration) {
                             scoped[i].className = scoped[i].className.replace('scoped', '').trim();
                         }
 
-                        target.className += ' scoped';
+                        element.className += ' scoped';
                     }
                 }
 
-                if (target.classList.contains('toggle')) {
-                    var parent = target.parentNode;
-                    // To up to find parent li.row with data-id attribute
-
-                    console.log(parent);
-                    while(!parent.classList.contains('.item')) {
-                        parent = parent.parentNode;
+                if (element.classList.contains('toggle')) {
+                    if (element.classList.contains('enabled')) {
+                        element.className  = element.className.replace('enabled', '').trim();
+                        element.className += ' disabled';
+                        enabled = false;
                     }
-
-                    console.log('parent found: ', parent);
-                    if (target.classList.contains('enabled')) {
-                        target.className  = target.className.replace('enabled', '').trim();
-                        target.className += ' disabled';
-                    }
-                    else if (target.classList.contains('disabled')) {
-                        target.className  = target.className.replace('disabled', '').trim();
-                        target.className += ' enabled';
+                    else if (element.classList.contains('disabled')) {
+                        element.className  = element.className.replace('disabled', '').trim();
+                        element.className += ' enabled';
+                        enabled = true;
                     }
                 }
 
-                target = target.parentNode;
+                element = element.parentNode;
 
                 limit--;
             }
-            while (!target.parentNode.classList.contains('toggleView') || limit <= 0);
+
+            // Output:
+            //
+            // console.log(id);
+            // console.log(enabled);
+
+            if (enabled !== null) {
+                if (enabled) {
+                    items[id].enabled = true;
+                    items[id].tool.enable();
+                }
+                else {
+                    items[id].enabled = false;
+                    items[id].tool.disable();
+                }
+            }
         };
     }
 
