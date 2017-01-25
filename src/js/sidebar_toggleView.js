@@ -138,61 +138,58 @@ function SidebarRightToggleView(configuration) {
 
     function bindEvents() {
         toggleView.onclick = function (e) {
-            var target = e.target;
-            var parent = target.parentNode;
-            console.log('click', e.target);
-            var i = 0;
-
+            var target = e.target,
+                limit  = 10,
+                i;
 
             do {
-                i++;
-                parent = parent.parentNode;
+                if (target.classList.contains('item')) {
+                    if (!target.classList.contains('scoped')) {
+                        var scoped = toggleView.getElementsByClassName('scoped');
 
-                console.log('parent', parent);
+                        // Remove all deprecated scoped items
+                        for (i = 0; i < scoped.length; i++) {
+                            scoped[i].className = scoped[i].className.replace('scoped', '').trim();
+                        }
 
+                        target.className += ' scoped';
+                    }
+                }
+
+                if (target.classList.contains('toggle')) {
+                    var parent = target.parentNode;
+                    // To up to find parent li.row with data-id attribute
+
+                    console.log(parent);
+                    while(!parent.classList.contains('.item')) {
+                        parent = parent.parentNode;
+                    }
+
+                    console.log('parent found: ', parent);
+                    if (target.classList.contains('enabled')) {
+                        target.className  = target.className.replace('enabled', '').trim();
+                        target.className += ' disabled';
+                    }
+                    else if (target.classList.contains('disabled')) {
+                        target.className  = target.className.replace('disabled', '').trim();
+                        target.className += ' enabled';
+                    }
+                }
+
+                target = target.parentNode;
+
+                limit--;
             }
-            while (!parent.classList.contains('toggleView'));
-
-            console.log(i);
-
-
-
-            if (e.target.classList.contains('part') || e.target.parentNode.classList.contains('part')) {
-                console.log('hier');
-            }
+            while (!target.parentNode.classList.contains('toggleView') || limit <= 0);
         };
-
-
-
-        /*
-        toggleView.addEventListener("click", function onClickEvent() {
-            // ...
-        });
-
-
-
-        $sidebar.off('.sidebarEvents');
-        $sidebar.on('click.sidebarEvents', '.item', function(e) {
-            var $this  = $(this),
-                $item  = $this,
-                $items = $sidebar.find('.item'),
-                $row   = $item.find('.row');
-
-            $items.removeClass('scoped');
-            $item.addClass('scoped');
-        });
-        */
     }
 
     // -------------------------------------------------------------------------------------------------- Public methods
 
     function appendTool(data) {
-        console.log(data);
         var markup  = [],
             item    = data || {},
-            element = document.querySelectorAll('[data-id="' + item.pid +'"]');
-
-        // @todo - Searc only fpr data-id attributes in the current scope 'sidebarJS'
+            element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]');
 
         if (items[item.id] || !element.length) {
             console.warn('There is already a item with this id : ', item.id);
@@ -205,8 +202,8 @@ function SidebarRightToggleView(configuration) {
 
         markup.push('<li class="item tool" data-id="' + item.id + '">');
         markup.push(  '<div class="row">');
-        markup.push(    '<div class="part toggle">');
-        markup.push(      '<span class="icon-toggle ' + ((item.enabled) ? 'enabled' : 'disabled') + '"></span>');
+        markup.push(    '<div class="part toggle ' + ((item.enabled) ? 'enabled' : 'disabled') + '">');
+        markup.push(      '<span class="icon-toggle"></span>');
         markup.push(    '</div>');
         markup.push(    '<div class="part move"></div>');
         markup.push(    '<div class="part space"></div>');

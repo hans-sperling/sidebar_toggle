@@ -96,6 +96,14 @@
             margin : 7px 0 0 0;
             color  : $fontColor;
         }
+
+        &.enabled .icon-toggle {
+            @include icon-enabled();
+        }
+
+        &.disabled .icon-toggle {
+            @include icon-disabled();
+        }
     }
 
     .move {

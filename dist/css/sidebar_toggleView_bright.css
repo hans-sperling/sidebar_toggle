@@ -30,12 +30,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.sidebarJS .toggleView .icon-toggle.enabled:before {
-  content: '\e800';
-}
-.sidebarJS .toggleView .icon-toggle.disabled:before {
-  content: '\e801';
-}
 .sidebarJS .toggleView .icon-folding.collapsed:before {
   content: '\e802';
 }
@@ -82,12 +76,6 @@
   margin-left: .2em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-.sidebarJS[data-layout="bright"] .sidebarJS .toggleView .icon-toggle.enabled:before {
-  content: '\e800';
-}
-.sidebarJS[data-layout="bright"] .sidebarJS .toggleView .icon-toggle.disabled:before {
-  content: '\e801';
 }
 .sidebarJS[data-layout="bright"] .sidebarJS .toggleView .icon-folding.collapsed:before {
   content: '\e802';
@@ -198,6 +186,12 @@
 .sidebarJS[data-layout="bright"] .toggle .icon-toggle {
   margin: 7px 0 0 0;
   color: #1e1e1e;
+}
+.sidebarJS[data-layout="bright"] .toggle.enabled .icon-toggle:before {
+  content: '\e800';
+}
+.sidebarJS[data-layout="bright"] .toggle.disabled .icon-toggle:before {
+  content: '\e801';
 }
 .sidebarJS[data-layout="bright"] .move {
   width: 10px;

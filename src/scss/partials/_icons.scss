@@ -42,10 +42,12 @@ $cssScope  : sidebarJS !default;
         -moz-osx-font-smoothing : grayscale;
     }
 
-    .icon-toggle.enabled:before          { content: '\e800'; }
-    .icon-toggle.disabled:before         { content: '\e801'; }
     .icon-folding.collapsed:before       { content: '\e802'; }
     .icon-folding.expanded:before        { content: '\e803'; }
     .icon-masterFolding.collapsed:before { content: '\e804'; }
     .icon-masterFolding.expanded:before  { content: '\e805'; }
 }
+
+@mixin icon-enabled()  { &:before { content: '\e800'; } }
+@mixin icon-disabled() { &:before { content: '\e801'; } }
+
