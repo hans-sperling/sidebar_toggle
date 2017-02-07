@@ -63,19 +63,6 @@
                 }
             });
 
-
-            var sidebarLeft = new Sidebar({
-                id       : 'SidebarLeft',
-                scope    : 'sidebarJS',
-                layout   : 'dark',
-                expanded : !true,
-                position : 'left',
-                callback : function callback(sidebarData) {
-                    //createToggleView(sidebarData);
-                }
-            });
-
-
             function getTool(id) {
 
                 function getMarkup () {
@@ -83,7 +70,7 @@
                 }
 
                 function callback() {
-                    //console.log('Callback for Tool ' + id);
+                    console.log('Callback for Tool ' + id);
                 }
 
                 function enable() {
@@ -105,13 +92,17 @@
             function createToggleView(sidebarData) {
                 var toggleView = new SidebarRightToggleView({
                     element  : sidebarData.content,
+                    tools    : [
+                        { id : 1, pid : 0, enabled : true, tool : getTool(1) },
+                        { id : 2, pid : 0, enabled : true, tool : getTool(2) }
+                    ],
                     callback : function callback(toggleViewData) {}
                 });
 
-                toggleView.appendTool( { id :  1, pid : 0, enabled : true,  tool : getTool(1) } );
-                toggleView.appendTool( { id :  2, pid : 0, enabled : true,  tool : getTool(2) } );
                 toggleView.appendTool( { id :  3, pid : 0, enabled : true,  tool : getTool(3) } );
                 toggleView.appendTool( { id :  4, pid : 0, enabled : true,  tool : getTool(4) } );
+                toggleView.appendTool( { id :  5, pid : 0, enabled : true,  tool : getTool(5) } );
+                toggleView.appendTool( { id :  6, pid : 0, enabled : true,  tool : getTool(6) } );
             }
 
         </script>
