@@ -11,6 +11,7 @@ function SidebarRightToggleView(configuration) {
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
         toggleView,
+        cookieName = 'sidebar_toggleView',
         cookieData = {},
         items = [];
 
@@ -25,12 +26,13 @@ function SidebarRightToggleView(configuration) {
      * @private
      */
     function init() {
+        cookieData = readCookie(cookieName);
 
         mergeConfig();
 
         appendToggle(config.element);
+        appendTools(config.tools);
         bindEvents();
-        createCookie('sidebar_toggleView', { test1: 'eins', test2: 2}, 1);
     }
 
     // -------------------------------------------------------------------------------------------------- Helper methods
@@ -99,6 +101,8 @@ function SidebarRightToggleView(configuration) {
     function mergeConfig() {
         configuration = configuration || {};
         config        = deepMerge(defaultConfiguration, configuration);
+
+        config.tools  = deepMerge(config.tools, cookieData);
     }
 
     // -------------------------------------------------------------------------------------------------- Module methods
@@ -192,7 +196,6 @@ function SidebarRightToggleView(configuration) {
                     items[id].enabled = false;
                     items[id].tool.disable();
                 }
-
             }
         };
     }
@@ -232,7 +235,7 @@ function SidebarRightToggleView(configuration) {
             }
         }
 
-        return null;
+        return {};
     }
 
 
@@ -242,7 +245,20 @@ function SidebarRightToggleView(configuration) {
 
     // -------------------------------------------------------------------------------------------------- Public methods
 
+    function appendTools(tools) {
+        var tool, i;
+
+
+        for (i in tools) {
+            if (!tools.hasOwnProperty(i)) { continue; }
+
+            appendTool(tools[i]);
+        }
+    }
+
+
     function appendTool(data) {
+        console.log(data);
         var markup  = [],
             item    = data || {},
             element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]');
