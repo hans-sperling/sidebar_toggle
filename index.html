@@ -78,7 +78,7 @@
                 }
 
                 function callback(data) {
-                    console.log('Callback for Tool ' + id);
+                    //console.log('Callback for Tool ' + id);
                 }
 
                 return {
@@ -91,17 +91,17 @@
 
             function createToggleView(sidebarData) {
                 var toggleView = new SidebarRightToggleView({
-                    element  : sidebarData.content,
-                    items    : [
+                    element : sidebarData.content,
+                    items   : [
                         { id : 1, pid : 0, enabled : true, tool : getTool(1) },
                         { id : 2, pid : 0, enabled : false, tool : getTool(2) }
                     ]
                 });
 
-                toggleView.appendItem( { id :  3, pid : 0, enabled : false,  tool : getTool(3) } );
-                toggleView.appendItem( { id :  4, pid : 0, enabled : false,  tool : getTool(4) } );
-                toggleView.appendItem( { id :  5, pid : 0, enabled : true,  tool : getTool(5) } );
-                toggleView.appendItem( { id :  6, pid : 0, enabled : true,  tool : getTool(6) } );
+                toggleView.appendItem( { id : 3, pid : 0, enabled : false, tool : getTool(3) } );
+                toggleView.appendItem( { id : 4, pid : 0, enabled : false, tool : getTool(4) } );
+                toggleView.appendItem( { id : 5, pid : 0, enabled : true, tool : getTool(5) } );
+                toggleView.appendItem( { id : 6, pid : 0, enabled : true, tool : getTool(6) } );
             }
 
         </script>

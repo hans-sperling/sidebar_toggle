@@ -9,13 +9,15 @@ function SidebarRightToggleView(configuration) {
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
         toggleView,
+        cookieDataDefault = {
+            items : []
+        },
         cookie = {
             name : 'sidebar_toggleView',
-            data : {
-                items : []
-            },
+            data : cookieDataDefault,
             days : 1
-        };
+        },
+        items = {};
 
     // ------------------------------------------------------------------------------------------- Initial & Constructor
 
@@ -28,9 +30,10 @@ function SidebarRightToggleView(configuration) {
      * @private
      */
     function init() {
-        cookie.data = (readCookie(cookie.name)) === null ? cookie.data : readCookie(cookie.name);
+        cookie.data = (readCookie(cookie.name)) === null ? cookieDataDefault : JSON.parse(readCookie(cookie.name));
 
         mergeConfig();
+        mergeCookie();
 
         appendToggleViewToElement(config.element);
         appendItems(config.items);
@@ -103,8 +106,10 @@ function SidebarRightToggleView(configuration) {
     function mergeConfig() {
         configuration = configuration || {};
         config        = deepMerge(defaultConfiguration, configuration);
+    }
 
-        config.items  = deepMerge(config.items, cookie.data.items);
+    function mergeCookie() {
+
     }
 
     // -------------------------------------------------------------------------------------------------- Module methods
@@ -270,26 +275,23 @@ function SidebarRightToggleView(configuration) {
 
 
     function appendItem(item) {
-        item = item || {}; // Fallback
 
         var markup  = [],
-            element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]');
+            element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]'),
+            enabled = (cookie.data.items[item.id]) ? cookie.data.items[item.id] : item.enabled;
 
         if(!element.length) {
             console.warn('There is no element with data-id=', item.id);
         }
 
-        if (config.items[item.id]) {
+        if (items[item.id]) {
             console.warn('There is already a item with this id : ', item.id);
-            return;
         }
 
         element = element[0];
 
-        config.items[item.id] = item;
+        items[item.id] = item;
         appendItemToCookieData(item);
-
-
 
         markup.push('<li class="item tool" data-id="' + item.id + '">');
         markup.push(  '<div class="row">');
