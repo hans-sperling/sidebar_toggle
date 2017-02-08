@@ -3,17 +3,19 @@ function SidebarRightToggleView(configuration) {
     // ---------------------------------------------------------------------------------------- Preferences & Properties
 
     var defaultConfiguration = {
-            callback : function() {},
-            element  : '',
-            layout   : 'bright',
-            scope    : 'sidebarJS',
-            tools    : []
+            element : '',
+            layout  : 'bright',
+            items   : []
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
         toggleView,
-        cookieName = 'sidebar_toggleView',
-        cookieData = {},
-        items = [];
+        cookie = {
+            name : 'sidebar_toggleView',
+            data : {
+                items : []
+            },
+            days : 1
+        };
 
     // ------------------------------------------------------------------------------------------- Initial & Constructor
 
@@ -26,12 +28,12 @@ function SidebarRightToggleView(configuration) {
      * @private
      */
     function init() {
-        cookieData = readCookie(cookieName);
+        cookie.data = (readCookie(cookie.name)) === null ? cookie.data : readCookie(cookie.name);
 
         mergeConfig();
 
-        appendToggle(config.element);
-        appendTools(config.tools);
+        appendToggleViewToElement(config.element);
+        appendItems(config.items);
         bindEvents();
     }
 
@@ -102,7 +104,7 @@ function SidebarRightToggleView(configuration) {
         configuration = configuration || {};
         config        = deepMerge(defaultConfiguration, configuration);
 
-        config.tools  = deepMerge(config.tools, cookieData);
+        config.items  = deepMerge(config.items, cookie.data.items);
     }
 
     // -------------------------------------------------------------------------------------------------- Module methods
@@ -115,7 +117,7 @@ function SidebarRightToggleView(configuration) {
      */
     function getPublicApi() {
         return {
-            appendTool : appendTool
+            appendItem : appendItem
         };
     }
 
@@ -126,7 +128,7 @@ function SidebarRightToggleView(configuration) {
      * @private
      * @returns {HTMLElement}
      */
-    function appendToggle(element) {
+    function appendToggleViewToElement(element) {
         var ul = document.createElement('ul');
 
         ul.className = 'list';
@@ -137,10 +139,6 @@ function SidebarRightToggleView(configuration) {
 
         element.className += ' toggleView';
         element.appendChild(toggleView);
-
-        config.callback({
-            toggleView : toggleView
-        });
     }
 
 
@@ -151,7 +149,7 @@ function SidebarRightToggleView(configuration) {
                 limit   = 10,
                 id      = null,
                 enabled = null,
-                i;
+                i, item;
 
             while ((element !== toggleView) || (limit <= 0)) {
                 if (element.classList.contains('item')) {
@@ -188,14 +186,19 @@ function SidebarRightToggleView(configuration) {
             }
 
             if (enabled !== null) {
+                item = config.items[id];
+
                 if (enabled) {
-                    items[id].enabled = true;
-                    items[id].tool.enable();
+                    item.enabled = true;
+                    item.tool.enable();
                 }
                 else {
-                    items[id].enabled = false;
-                    items[id].tool.disable();
+                    item.enabled = false;
+                    item.tool.disable();
                 }
+
+                appendItemToCookieData(item);
+                createCookie(cookie.name, cookie.data, 1);
             }
         };
     }
@@ -235,7 +238,7 @@ function SidebarRightToggleView(configuration) {
             }
         }
 
-        return {};
+        return null;
     }
 
 
@@ -245,32 +248,48 @@ function SidebarRightToggleView(configuration) {
 
     // -------------------------------------------------------------------------------------------------- Public methods
 
-    function appendTools(tools) {
-        var tool, i;
+    function appendItems(items) {
+        var i;
 
 
-        for (i in tools) {
-            if (!tools.hasOwnProperty(i)) { continue; }
+        for (i in items) {
+            if (!items.hasOwnProperty(i)) { continue; }
 
-            appendTool(tools[i]);
+            appendItem(items[i]);
         }
     }
 
 
-    function appendTool(data) {
-        console.log(data);
+    function appendItemToCookieData(item) {
+        cookie.data.items[item.id] = {
+            id      : item.id,
+            pid     : item.pid,
+            enabled : item.enabled
+        };
+    }
+
+
+    function appendItem(item) {
+        item = item || {}; // Fallback
+
         var markup  = [],
-            item    = data || {},
             element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]');
 
-        if (items[item.id] || !element.length) {
+        if(!element.length) {
+            console.warn('There is no element with data-id=', item.id);
+        }
+
+        if (config.items[item.id]) {
             console.warn('There is already a item with this id : ', item.id);
             return;
         }
 
         element = element[0];
 
-        items[item.id] = item;
+        config.items[item.id] = item;
+        appendItemToCookieData(item);
+
+
 
         markup.push('<li class="item tool" data-id="' + item.id + '">');
         markup.push(  '<div class="row">');
@@ -279,7 +298,7 @@ function SidebarRightToggleView(configuration) {
         markup.push(    '</div>');
         markup.push(    '<div class="part move"></div>');
         markup.push(    '<div class="part space"></div>');
-        markup.push(    '<div class="part markup">' + data.tool.getMarkup() + '</div>');
+        markup.push(    '<div class="part markup">' + item.tool.getMarkup() + '</div>');
         markup.push(  '</div>');
         markup.push('</li>');
 
