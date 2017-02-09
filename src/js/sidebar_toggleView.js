@@ -1,3 +1,4 @@
+/*! sidebar_toggleView -  - Version: 0.1.0 */
 function SidebarRightToggleView(configuration) {
 
     // ---------------------------------------------------------------------------------------- Preferences & Properties
@@ -9,14 +10,6 @@ function SidebarRightToggleView(configuration) {
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
         toggleView,
-        cookieDataDefault = {
-            items : []
-        },
-        cookie = {
-            name : 'sidebar_toggleView',
-            data : cookieDataDefault,
-            days : 1
-        },
         items = {};
 
     // ------------------------------------------------------------------------------------------- Initial & Constructor
@@ -30,10 +23,7 @@ function SidebarRightToggleView(configuration) {
      * @private
      */
     function init() {
-        cookie.data = (readCookie(cookie.name)) === null ? cookieDataDefault : JSON.parse(readCookie(cookie.name));
-
         mergeConfig();
-        mergeCookie();
 
         appendToggleViewToElement(config.element);
         appendItems(config.items);
@@ -106,10 +96,6 @@ function SidebarRightToggleView(configuration) {
     function mergeConfig() {
         configuration = configuration || {};
         config        = deepMerge(defaultConfiguration, configuration);
-    }
-
-    function mergeCookie() {
-
     }
 
     // -------------------------------------------------------------------------------------------------- Module methods
@@ -191,7 +177,7 @@ function SidebarRightToggleView(configuration) {
             }
 
             if (enabled !== null) {
-                item = config.items[id];
+                item = items[id];
 
                 if (enabled) {
                     item.enabled = true;
@@ -202,75 +188,21 @@ function SidebarRightToggleView(configuration) {
                     item.tool.disable();
                 }
 
-                appendItemToCookieData(item);
-                createCookie(cookie.name, cookie.data, 1);
+                return config;
             }
         };
-    }
-
-
-    function createCookie(name, value, days) {
-        var date, expires;
-
-        if (days) {
-            date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-
-            expires = '; expires=' + date.toGMTString();
-        }
-        else {
-            expires = '';
-        }
-
-        document.cookie = name + '=' + JSON.stringify(value) + expires + '; path=/';
-    }
-
-
-    function readCookie(name) {
-        var nameEQ = name + '=',
-            ca     = document.cookie.split(';'),
-            c, i;
-
-        for(i = 0; i < ca.length; i++) {
-            c = ca[i];
-
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1, c.length);
-            }
-
-            if (c.indexOf(nameEQ) == 0) {
-                return c.substring(nameEQ.length,c.length);
-            }
-        }
-
-        return null;
-    }
-
-
-    function eraseCookie(name) {
-        createCookie(name, '', -1);
     }
 
     // -------------------------------------------------------------------------------------------------- Public methods
 
     function appendItems(items) {
-        var i;
+        var amount = items.length,
+            i, item;
 
-
-        for (i in items) {
-            if (!items.hasOwnProperty(i)) { continue; }
-
-            appendItem(items[i]);
+        for (i = 0; i < amount; i++) {
+            item = items[i];
+            appendItem(item);
         }
-    }
-
-
-    function appendItemToCookieData(item) {
-        cookie.data.items[item.id] = {
-            id      : item.id,
-            pid     : item.pid,
-            enabled : item.enabled
-        };
     }
 
 
@@ -278,7 +210,7 @@ function SidebarRightToggleView(configuration) {
 
         var markup  = [],
             element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]'),
-            enabled = (cookie.data.items[item.id]) ? cookie.data.items[item.id] : item.enabled;
+            enabled = item.enabled;
 
         if(!element.length) {
             console.warn('There is no element with data-id=', item.id);
@@ -291,7 +223,6 @@ function SidebarRightToggleView(configuration) {
         element = element[0];
 
         items[item.id] = item;
-        appendItemToCookieData(item);
 
         markup.push('<li class="item tool" data-id="' + item.id + '">');
         markup.push(  '<div class="row">');

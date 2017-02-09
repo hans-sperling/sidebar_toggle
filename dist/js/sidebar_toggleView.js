@@ -4,14 +4,13 @@ function SidebarRightToggleView(configuration) {
     // ---------------------------------------------------------------------------------------- Preferences & Properties
 
     var defaultConfiguration = {
-            callback : function() {},
-            scope    : 'sidebarJS',
-            layout   : 'bright',
-            element  : ''
+            element : '',
+            layout  : 'bright',
+            items   : []
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
         toggleView,
-        items = [];
+        items = {};
 
     // ------------------------------------------------------------------------------------------- Initial & Constructor
 
@@ -24,10 +23,10 @@ function SidebarRightToggleView(configuration) {
      * @private
      */
     function init() {
-
         mergeConfig();
 
-        appendToggle(config.element);
+        appendToggleViewToElement(config.element);
+        appendItems(config.items);
         bindEvents();
     }
 
@@ -109,7 +108,7 @@ function SidebarRightToggleView(configuration) {
      */
     function getPublicApi() {
         return {
-            appendTool : appendTool
+            appendItem : appendItem
         };
     }
 
@@ -120,7 +119,7 @@ function SidebarRightToggleView(configuration) {
      * @private
      * @returns {HTMLElement}
      */
-    function appendToggle(element) {
+    function appendToggleViewToElement(element) {
         var ul = document.createElement('ul');
 
         ul.className = 'list';
@@ -131,22 +130,17 @@ function SidebarRightToggleView(configuration) {
 
         element.className += ' toggleView';
         element.appendChild(toggleView);
-
-        config.callback({
-            toggleView : toggleView
-        });
     }
 
 
     function bindEvents() {
-
         toggleView.onclick = function (e) {
             var target  = e.target,
                 element = target,
                 limit   = 10,
                 id      = null,
                 enabled = null,
-                i;
+                i, item;
 
             while ((element !== toggleView) || (limit <= 0)) {
                 if (element.classList.contains('item')) {
@@ -183,13 +177,15 @@ function SidebarRightToggleView(configuration) {
             }
 
             if (enabled !== null) {
+                item = config.items[id];
+
                 if (enabled) {
-                    items[id].enabled = true;
-                    items[id].tool.enable();
+                    item.enabled = true;
+                    item.tool.enable();
                 }
                 else {
-                    items[id].enabled = false;
-                    items[id].tool.disable();
+                    item.enabled = false;
+                    item.tool.disable();
                 }
             }
         };
@@ -197,14 +193,30 @@ function SidebarRightToggleView(configuration) {
 
     // -------------------------------------------------------------------------------------------------- Public methods
 
-    function appendTool(data) {
-        var markup  = [],
-            item    = data || {},
-            element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]');
+    function appendItems(items) {
+        var i;
 
-        if (items[item.id] || !element.length) {
+
+        for (i in items) {
+            if (!items.hasOwnProperty(i)) { continue; }
+
+            appendItem(items[i]);
+        }
+    }
+
+
+    function appendItem(item) {
+
+        var markup  = [],
+            element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]'),
+            enabled = item.enabled;
+
+        if(!element.length) {
+            console.warn('There is no element with data-id=', item.id);
+        }
+
+        if (items[item.id]) {
             console.warn('There is already a item with this id : ', item.id);
-            return;
         }
 
         element = element[0];
@@ -218,7 +230,7 @@ function SidebarRightToggleView(configuration) {
         markup.push(    '</div>');
         markup.push(    '<div class="part move"></div>');
         markup.push(    '<div class="part space"></div>');
-        markup.push(    '<div class="part markup">' + data.tool.getMarkup() + '</div>');
+        markup.push(    '<div class="part markup">' + item.tool.getMarkup() + '</div>');
         markup.push(  '</div>');
         markup.push('</li>');
 
