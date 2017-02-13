@@ -1,4 +1,5 @@
 /*! sidebar_toggleView -  - Version: 0.1.0 */
+/*! sidebar_toggleView -  - Version: 0.1.0 */
 function SidebarRightToggleView(configuration) {
 
     // ---------------------------------------------------------------------------------------- Preferences & Properties
@@ -177,7 +178,7 @@ function SidebarRightToggleView(configuration) {
             }
 
             if (enabled !== null) {
-                item = config.items[id];
+                item = items[id];
 
                 if (enabled) {
                     item.enabled = true;
@@ -187,6 +188,8 @@ function SidebarRightToggleView(configuration) {
                     item.enabled = false;
                     item.tool.disable();
                 }
+
+                return config;
             }
         };
     }
@@ -194,13 +197,12 @@ function SidebarRightToggleView(configuration) {
     // -------------------------------------------------------------------------------------------------- Public methods
 
     function appendItems(items) {
-        var i;
+        var amount = items.length,
+            i, item;
 
-
-        for (i in items) {
-            if (!items.hasOwnProperty(i)) { continue; }
-
-            appendItem(items[i]);
+        for (i = 0; i < amount; i++) {
+            item = items[i];
+            appendItem(item);
         }
     }
 
