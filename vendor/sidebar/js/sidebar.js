@@ -1,40 +1,65 @@
-/*! sidebar.js - Appends a sidebar to the DOM with toggle functionality to expand and collapse it. - Version: 1.0.0 */
+/*! sidebar.js - Appends a sidebar to the DOM with toggle functionality to expand and collapse it. - Version: 2.2.0 */
 /**
  * Appends a sidebar to the DOM with toggle functionality to expand and collapse it.
  *
  * @class Sidebar
+ *
  * @type     {Object}
- * @property {Function} collapse
- * @property {Function} expand
- * @property {Function} remove
+ * @property {Function} collapse          - Collapses the sidebar.
+ * @property {Function} expand            - Expands the sidebar.
+ * @property {Function} getContentElement - Returns the scope of the .content HTML-Element.
+ * @property {Function} getHeaderElement  - Returns the scope of the .header HTML-Element.
+ * @property {Function} getResizerElement - Returns the scope of the .resizer HTML-Element.
+ * @property {Function} getSidebarElement - Returns the scope of the sidebar HTML-Element.
+ * @property {Function} remove            - Removes and unbinds the sidebar.
  *
  * @param {Object}   configuration
- * @param {Function} configuration.callback - Callback function - Will be called on appending the sidebar to the DOM
- * @param {String}   configuration.scope    - Scope of the CSS (default: sidebarJS)
- * @param {String}   configuration.layout   - Custom CSS classes to set the layout (bright, dark)
+ * @param {String}   configuration.class    - CSS-Class(default: sidebarJS)
  * @param {Boolean}  configuration.expanded - Initial folding of the sidebar
  * @param {String}   configuration.id       - DOM-ID for the sidebar
+ * @param {String}   configuration.layout   - Custom CSS classes to set the layout (bright, dark)
+ * @param {Function} configuration.onResize - Callback function for the resizing event
  * @param {String}   configuration.position - Position of the sidebar (top|right|bottom|left)
  *
  * @returns {Object}
+ * @example
+ * var sidebarRight,
+ *     sidebarLeft;
+ *
+ * // Minimal config - use all defaults
+ * sidebarRight = new Sidebar({
+ *     id : 'SidebarRight'
+ * });
+ *
+ * // Full config
+ * sidebarLeft = new Sidebar({
+ *     id       : 'SidebarLeft',
+ *     class    : 'sidebarJS',
+ *     layout   : 'dark',
+ *     position : 'left',
+ *     onResize : function(callbackData) {
+ *         console.log(callbackData);
+ *     },
+ *     expanded : false
+ * });
  */
 function Sidebar(configuration) {
 
     // ---------------------------------------------------------------------------------------- Preferences & Properties
 
     var defaultConfiguration = {
-            callback : function() {},
-            scope    : 'sidebarJS',
-            layout   : 'bright',
+            class    : 'sidebarJS',
             expanded : true,
             id       : '',
+            layout   : 'bright',
+            onResize : function (){},
             position : 'right'
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
-        sidebar,     // Contains the sidebar html element.
-        resizer,     // Contains the sidebar .resizer html element.
-        header,      // Contains the sidebar .header html element.
-        content;     // Contains the sidebar .content html element.
+        sidebar,     // Contains the scope of the sidebars HTML-Element.
+        resizer,     // Contains the scope og the sidebars .resizer HTML-Element.
+        header,      // Contains the scope of the sidebar .header HTML-Element.
+        content;     // Contains the scope of the sidebars .content HTML-Element.
 
     // ------------------------------------------------------------------------------------------- Initial & Constructor
 
@@ -133,9 +158,13 @@ function Sidebar(configuration) {
      */
     function getPublicApi() {
         return {
-            collapse : collapse,
-            expand   : expand,
-            remove   : remove
+            collapse          : collapse,
+            expand            : expand,
+            remove            : remove,
+            getContentElement : getContentElement,
+            getHeaderElement  : getHeaderElement,
+            getResizerElement : getResizerElement,
+            getSidebarElement : getSidebarElement
         };
     }
 
@@ -177,7 +206,7 @@ function Sidebar(configuration) {
             sidebar.id = config.id;
         }
 
-        sidebar.className = config.scope + ((config.expanded) ? ' expanded' : ' collapsed');
+        sidebar.className = config.class + ((config.expanded) ? ' expanded' : ' collapsed');
         sidebar.setAttribute('data-position', config.position);
         sidebar.setAttribute('data-layout',   config.layout);
 
@@ -188,12 +217,6 @@ function Sidebar(configuration) {
         if (!hasDomElement) {
             document.getElementsByTagName('body')[0].appendChild(sidebar);
         }
-
-        config.callback({
-            sidebar : sidebar,
-            header  : header,
-            content : content
-        });
 
         return sidebar;
     }
@@ -261,24 +284,18 @@ function Sidebar(configuration) {
     // -------------------------------------------------------------------------------------------------- Public methods
 
     /**
-     * Expands the sidebar.
+     * Collapses the sidebar and fires onResize-Callback.
      *
      * @public
-     */
-    function expand() {
-        if (!config.expanded) {
-            config.expanded = true;
-
-            sidebar.className  = cleanUpClassNames(sidebar.className);
-            sidebar.className += '  expanded';
-        }
-    }
-
-
-    /**
-     * Collapses the sidebar.
+     * @example
+     * // Create an expanded instance of a sidebar
+     * var sidebar = new Sidebar({
+     *     id       : 'Sidebar',
+     *     expanded : true
+     * });
      *
-     * @public
+     * // Collapse the sidebar
+     * sidebar.collapse();
      */
     function collapse() {
         if (config.expanded) {
@@ -286,14 +303,166 @@ function Sidebar(configuration) {
 
             sidebar.className  = cleanUpClassNames(sidebar.className);
             sidebar.className += ' collapsed';
+
+            config.onResize({
+                expanded : config.expanded
+            });
         }
     }
 
 
     /**
-     * Removes and unbind the sidebar
+     * Expands the sidebar and fires onResize-Callback.
      *
      * @public
+     * @example
+     * // Create a collapsed instance of a sidebar
+     * var sidebar = new Sidebar({
+     *     id       : 'Sidebar',
+     *     expanded : false
+     * });
+     *
+     * // Expand the sidebar
+     * sidebar.expand();
+     */
+    function expand() {
+        if (!config.expanded) {
+            config.expanded = true;
+
+            sidebar.className  = cleanUpClassNames(sidebar.className);
+            sidebar.className += '  expanded';
+
+            config.onResize({
+                expanded : config.expanded
+            });
+        }
+    }
+
+
+    /**
+     * Returns the scope of the content HTML-Element.
+     *
+     * @public
+     * @returns {HTMLElement}
+     * @example
+     * var sidebar,
+     *     contentElement,
+     *     newElement;
+     *
+     * // Create an instance of a sidebar
+     * sidebar = new Sidebar({
+     *     id : 'Sidebar'
+     * });
+     *
+     * // Get the content element of the sidebar
+     * contentElement = sidebar.getContentElement();
+     *
+     * // Create child element for the content element
+     * newElement = document.createElement('p');
+     * newElement.innerHTML = 'Content markup';
+     *
+     * // Append child element
+     * contentElement.appendChild(newElement);
+     */
+    function getContentElement() {
+        return content;
+    }
+
+
+    /**
+     * Returns the scope of the header HTML-Element.
+     *
+     * @public
+     * @returns {HTMLElement}
+     * @example
+     * var sidebar,
+     *     headerElement,
+     *     newElement;
+     *
+     * // Create an instance of a sidebar
+     * sidebar = new Sidebar({
+     *     id : 'Sidebar'
+     * });
+     *
+     * // Get the header element of the sidebar
+     * headerElement = sidebar.getHeaderElement();
+     *
+     * // Create child element for the header element
+     * newElement = document.createElement('p');
+     * newElement.innerHTML = 'Header markup';
+     *
+     * // Append child element
+     * headerElement.appendChild(newElement);
+     */
+    function getHeaderElement() {
+        return header;
+    }
+
+
+    /**
+     * Returns the scope of the .resizer HTML-Element.
+     *
+     * @public
+     * @returns {HTMLElement}
+     * @example
+     * var sidebar,
+     *     resizerElement;
+     *
+     * // Create an instance of a sidebar
+     * sidebar = new Sidebar({
+     *     id : 'Sidebar'
+     * });
+     *
+     * // Get the resizer element of the sidebar
+     * resizerElement = sidebar.getResizerElement();
+     *
+     * // Add a custom CSS selector to the resizer element
+     * resizerElement.classList.push('customCssSelector');
+     */
+    function getResizerElement() {
+        return resizer;
+    }
+
+
+    /**
+     * Returns the scope of the sidebar HTML-Element.
+     *
+     * @public
+     * @returns {HTMLElement}
+     * @example
+     * var sidebar,
+     *     sidebarElement;
+     *
+     * // Create an instance of a sidebar
+     * sidebar = new Sidebar({
+     *     id : 'Sidebar'
+     * });
+     *
+     * // Get the sidebar element of the sidebar
+     * sidebarElement = sidebar.getSidebarElement();
+     *
+     * // Add a custom CSS selector to the sidebar element
+     * sidebarElement.classList.push('customCssSelector');
+     */
+    function getSidebarElement() {
+        return sidebar;
+    }
+
+
+    /**
+     * Removes and unbinds the sidebar.
+     *
+     * @public
+     * @example
+     * var sidebar;
+     *
+     * // Create an instance of a sidebar
+     * sidebar = new Sidebar({
+     *     id : 'Sidebar'
+     * });
+     *
+     * // Remove the sidebar from the DOM and unbind all its events
+     * sidebar.remove();
      */
     function remove() {
         unbindEvents();

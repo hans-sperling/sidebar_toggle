@@ -23,7 +23,7 @@
   width: 30px;
   height: 15px;
   cursor: pointer;
-  color: black;
+  color: #e6e6e6;
   user-select: none;
 }
 .sidebarJS[data-layout="dark"][data-position="top"] .resizer .clickable {
@@ -162,7 +162,7 @@
   width: 15px;
   height: 30px;
   cursor: pointer;
-  color: black;
+  color: #e6e6e6;
   user-select: none;
 }
 .sidebarJS[data-layout="dark"][data-position="right"] .resizer .clickable {
@@ -286,7 +286,7 @@
   width: 30px;
   height: 15px;
   cursor: pointer;
-  color: black;
+  color: #e6e6e6;
   user-select: none;
 }
 .sidebarJS[data-layout="dark"][data-position="bottom"] .resizer .clickable {
@@ -414,7 +414,7 @@
   width: 15px;
   height: 30px;
   cursor: pointer;
-  color: black;
+  color: #e6e6e6;
   user-select: none;
 }
 .sidebarJS[data-layout="dark"][data-position="left"] .resizer .clickable {

@@ -15,11 +15,11 @@ $cssScope : sidebarJS !default;
 
     // --------------------------------------------------------------------------------------------------------- Imports
 
-    @import "partials/sidebar_toggleView";
+    @import "partials/sidebar_toggle";
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    &[data-position="right"] .toggleView {
+    &[data-position="right"] .sidebar_toggle {
         .list .item .row .part {
             float : left;
         }
@@ -27,7 +27,7 @@ $cssScope : sidebarJS !default;
 
     // @todo - CSS display flex no floating
 
-    &[data-position="left"] .toggleView {
+    &[data-position="left"] .sidebar_toggle {
         .list .item .row .part {
             float : right;
         }

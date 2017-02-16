@@ -1,16 +1,15 @@
-/*! sidebar_toggleView -  - Version: 0.1.0 */
-/*! sidebar_toggleView -  - Version: 0.1.0 */
-function SidebarRightToggleView(configuration) {
+function Sidebar_Toggle(configuration) {
 
     // ---------------------------------------------------------------------------------------- Preferences & Properties
 
     var defaultConfiguration = {
-            element : '',
-            layout  : 'bright',
-            items   : []
+            element  : '',
+            layout   : 'bright',
+            items    : [],
+            onToggle : function(){}
         },           // Default configuration
         config = {}, // Contains the merged configurations of default- and user-given-config.
-        toggleView,
+        toggle,
         items = {};
 
     // ------------------------------------------------------------------------------------------- Initial & Constructor
@@ -26,7 +25,7 @@ function SidebarRightToggleView(configuration) {
     function init() {
         mergeConfig();
 
-        appendToggleViewToElement(config.element);
+        appendToggleToElement(config.element);
         appendItems(config.items);
         bindEvents();
     }
@@ -120,22 +119,22 @@ function SidebarRightToggleView(configuration) {
      * @private
      * @returns {HTMLElement}
      */
-    function appendToggleViewToElement(element) {
+    function appendToggleToElement(element) {
         var ul = document.createElement('ul');
 
         ul.className = 'list';
         ul.setAttribute('data-id', '0');
         ul.setAttribute('data-level', '0');
 
-        toggleView = ul;
+        toggle = ul;
 
-        element.className += ' toggleView';
-        element.appendChild(toggleView);
+        element.className += ' sidebar_toggle';
+        element.appendChild(toggle);
     }
 
 
     function bindEvents() {
-        toggleView.onclick = function (e) {
+        toggle.onclick = function (e) {
             var target  = e.target,
                 element = target,
                 limit   = 10,
@@ -143,12 +142,12 @@ function SidebarRightToggleView(configuration) {
                 enabled = null,
                 i, item;
 
-            while ((element !== toggleView) || (limit <= 0)) {
+            while ((element !== toggle) || (limit <= 0)) {
                 if (element.classList.contains('item')) {
                     id = element.getAttribute('data-id');
 
                     if (!element.classList.contains('scoped')) {
-                        var scoped = toggleView.getElementsByClassName('scoped');
+                        var scoped = toggle.getElementsByClassName('scoped');
 
                         // Remove all deprecated scoped items
                         for (i = 0; i < scoped.length; i++) {
@@ -182,14 +181,27 @@ function SidebarRightToggleView(configuration) {
 
                 if (enabled) {
                     item.enabled = true;
-                    item.tool.enable();
+                    item.tool.enable({
+                        id      : item.id,
+                        pid     : item.pid,
+                        enabled : item.enabled
+                    });
                 }
                 else {
                     item.enabled = false;
-                    item.tool.disable();
+                    item.tool.disable({
+                        id      : item.id,
+                        pid     : item.pid,
+                        enabled : item.enabled
+                    });
                 }
 
-                return config;
+                // Callback onToggle event
+                config.onToggle({
+                    id      : item.id,
+                    pid     : item.pid,
+                    enabled : item.enabled
+                });
             }
         };
     }
@@ -210,7 +222,7 @@ function SidebarRightToggleView(configuration) {
     function appendItem(item) {
 
         var markup  = [],
-            element = toggleView.parentNode.querySelectorAll('[data-id="' + item.pid +'"]'),
+            element = toggle.parentNode.querySelectorAll('[data-id="' + item.pid +'"]'),
             enabled = item.enabled;
 
         if(!element.length) {

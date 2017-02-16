@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>sidebar_right_toggle</title>
+        <title>sidebar_toggle</title>
         <meta name="description" content="">
 
         <style>
@@ -43,9 +43,9 @@
         <script src="vendor/sidebar/js/sidebar.js"></script>
 
         <!-- Application -->
-        <link href="dist/css/sidebar_toggleView_dark.css"   type="text/css" rel="stylesheet">
-        <link href="dist/css/sidebar_toggleView_bright.css" type="text/css" rel="stylesheet">
-        <script src="src/js/sidebar_toggleView.js"></script>
+        <link href="dist/css/sidebar_toggle_dark.css"   type="text/css" rel="stylesheet">
+        <link href="dist/css/sidebar_toggle_bright.css" type="text/css" rel="stylesheet">
+        <script src="src/js/sidebar_toggle.js"></script>
 
     </head>
     <body class="bright">
@@ -57,11 +57,10 @@
                 scope    : 'sidebarJS',
                 layout   : 'bright',
                 expanded : true,
-                position : 'right',
-                callback : function callback(sidebarData) {
-                    createToggleView(sidebarData);
-                }
+                position : 'right'
             });
+
+            createSidebarToggle(sidebarRight);
 
             function getTool(id) {
 
@@ -89,19 +88,25 @@
                 };
             }
 
-            function createToggleView(sidebarData) {
-                var toggleView = new SidebarRightToggleView({
-                    element : sidebarData.content,
-                    items   : [
+            function createSidebarToggle(sidebar) {
+                var sidebar_toggle = new Sidebar_Toggle({
+                    element  : sidebar.getContentElement(),
+                    onToggle : onToggle,
+                    items    : [
                         { id : 1, pid : 0, enabled : true, tool : getTool(1) },
                         { id : 2, pid : 0, enabled : false, tool : getTool(2) }
                     ]
                 });
 
-                toggleView.appendItem( { id : 3, pid : 0, enabled : false, tool : getTool(3) } );
-                toggleView.appendItem( { id : 4, pid : 0, enabled : false, tool : getTool(4) } );
-                toggleView.appendItem( { id : 5, pid : 0, enabled : true, tool : getTool(5) } );
-                toggleView.appendItem( { id : 6, pid : 0, enabled : true, tool : getTool(6) } );
+                sidebar_toggle.appendItem( { id : 3, pid : 0, enabled : false, tool : getTool(3) } );
+                sidebar_toggle.appendItem( { id : 4, pid : 0, enabled : false, tool : getTool(4) } );
+                sidebar_toggle.appendItem( { id : 5, pid : 0, enabled : true, tool : getTool(5)  } );
+                sidebar_toggle.appendItem( { id : 6, pid : 0, enabled : true, tool : getTool(6)  } );
+            }
+
+
+            function onToggle(data) {
+                console.log('onToggle', data);
             }
 
         </script>

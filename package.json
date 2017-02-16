@@ -1,17 +1,19 @@
 {
-    "name"        : "sidebar_toggleView",
+    "name"        : "sidebar_toggle",
     "version"     : "0.1.0",
     "description" : "",
     "keywords" : [
+        "extension",
+        "toggle",
         "sidebar",
         "development",
-        "tools",
+        "toolbar",
         "javascript",
         "frontend"
     ],
     "repository" : {
         "type" : "git",
-        "url"  : "https://github.com/hans-sperling/sidebar_toggleView"
+        "url"  : "https://github.com/hans-sperling/sidebar_toggle"
     },
     "dependencies" : {
       "grunt"                : "1.x.x",

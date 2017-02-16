@@ -17,18 +17,18 @@ $cssScope : sidebarJS !default;
 
     // --------------------------------------------------------------------------------------------------------- Imports
 
-    @import "partials/sidebar_toggleView";
+    @import "partials/sidebar_toggle";
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    &[data-position="right"] .toggleView {
+    &[data-position="right"] .sidebar_toggle {
         .part {
             float : left;
         }
     }
 
 
-    &[data-position="left"] .toggleView {
+    &[data-position="left"] .sidebar_toggle {
         .row {
             display: flex;
             flex-direction: row-reverse;
