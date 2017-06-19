@@ -1,0 +1,35 @@
+// --------------------------------------------------------------------------------------------------------------- Scope
+
+$cssScope : sidebarJS !default;
+
+@import "partials/icons";
+
+.#{$cssScope}[data-layout="red"] {
+
+    // ---------------------------------------------------------------------------------------------------------- Config
+
+    $rowColor       : rgb(255,100,100);
+    $rowColorScoped : rgb(255,160,160);
+    $fontColor      : rgb(30, 30, 30);
+    $borderColor    : rgb(70, 70, 70);
+
+    // --------------------------------------------------------------------------------------------------------- Imports
+
+    @import "partials/sidebar_toggle";
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    &[data-position="right"] .sidebar_toggle {
+        .list .item .row .part {
+            float : left;
+        }
+    }
+
+    // @todo - CSS display flex no floating
+
+    &[data-position="left"] .sidebar_toggle {
+        .list .item .row .part {
+            float : right;
+        }
+    }
+}
